@@ -61,6 +61,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_scale = 2
     text_thickness = 2
     line_thickness = 3
+    workers = 0
 
     for i, tlwh in enumerate(tlwhs):
         x1, y1, w, h = tlwh
@@ -75,12 +76,14 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
         cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (255, 255, 255),
                     thickness=text_thickness)
-        if dot[1]<im_h*0.6:
-            pass
+        if dot[1]<im_h*0.62:
+            workers += 1
 
-    radius = max(5, int(im_w/140.))
-    cv2.putText(im, f'frame: {frame_id} fps: {round(fps, 2)} num: {tlwhs}',
-                (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, 2, (255, 255, 255), thickness=3)
+    cv2.line(im, (0, round(im_h*0.62)), (im_w, round(im_h*0.62)), (0, 0, 255), thickness=3)
+    cv2.line(im, (round(im_w*0.40), round(im_h*0.62)), (round(im_w*0.40), round(im_h)), (0, 0, 255), thickness=3) # vertical 1
+    cv2.line(im, (round(im_w*0.60), round(im_h*0.62)), (round(im_w*0.60), round(im_h)), (0, 0, 255), thickness=3) # vertical 2
+    cv2.putText(im, f'Clients: {len(tlwhs)-workers} Workers: {workers}',
+                (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0), thickness=3)
 
     return im
 
