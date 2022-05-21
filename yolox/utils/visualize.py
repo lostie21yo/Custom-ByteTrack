@@ -59,9 +59,11 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     #text_thickness = 2
     #line_thickness = max(1, int(image.shape[1] / 500.))
     text_scale = 2
-    text_thickness = 2
+    text_thickness = 3
     line_thickness = 3
     workers = 0
+    cashbox = tuple(map(int, (im_w*0.42, im_h*0.62, im_w*0.57, im_h*0.82)))
+    clients = []
 
     for i, tlwh in enumerate(tlwhs):
         x1, y1, w, h = tlwh
@@ -78,12 +80,13 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                     thickness=text_thickness)
         if dot[1]<im_h*0.62:
             workers += 1
+            if dot[0]>cashbox[0] and dot[0]<cashbox[2] and obj_id not in clients:
+                clients.append(obj_id)
 
-    cv2.line(im, (0, round(im_h*0.62)), (im_w, round(im_h*0.62)), (0, 0, 255), thickness=3)
-    cv2.line(im, (round(im_w*0.40), round(im_h*0.62)), (round(im_w*0.40), round(im_h)), (0, 0, 255), thickness=3) # vertical 1
-    cv2.line(im, (round(im_w*0.60), round(im_h*0.62)), (round(im_w*0.60), round(im_h)), (0, 0, 255), thickness=3) # vertical 2
-    cv2.putText(im, f'Clients: {len(tlwhs)-workers} Workers: {workers}',
-                (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0), thickness=3)
+    cv2.line(im, (0, round(im_h*0.62)), (im_w, round(im_h*0.62)), (0, 0, 255), thickness=line_thickness)
+    cv2.rectangle(im, cashbox[0:2], cashbox[2:4], color=(0, 0, 255), thickness=line_thickness)
+    cv2.putText(im, f'Workers: {workers} Potential: {len(tlwhs)-workers} Clients: {len(clients)}',
+                (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
 
     return im
 
