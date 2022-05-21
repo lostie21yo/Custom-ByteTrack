@@ -48,7 +48,6 @@ def get_color(idx):
 
     return color
 
-
 clients = []
 
 def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=None):
@@ -66,7 +65,6 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     workers = 0
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
     cashbox = tuple(map(int, (im_w*0.37, im_h*cashbox_border, im_w*0.60, im_h*0.85)))
-    clients = []
 
     for i, tlwh in enumerate(tlwhs):
         x1, y1, w, h = tlwh
@@ -83,13 +81,13 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                     thickness=text_thickness)
         if dot[1]<im_h*cashbox_border:
             workers += 1
-            if dot[0]>cashbox[0] and dot[0]<cashbox[2] and obj_id not in clients:
+        if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3] and obj_id not in clients:
                 clients.append(obj_id)
 
-    cv2.rectangle(im, (0, 0), (int(im_w*0.4), im_h*0.15), color=(255, 255, 255), thickness=-1)
+    cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
     cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
     cv2.rectangle(im, cashbox[0:2], cashbox[2:4], color=(0, 0, 255), thickness=line_thickness)
-    cv2.putText(im, f'Workers: {workers} Potential: {len(tlwhs)-workers} Total Clients: {len(clients)}',
+    cv2.putText(im, f'Employees: {workers} Potential: {len(tlwhs)-workers} Total Clients: {len(clients)}',
                 (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
 
     return im

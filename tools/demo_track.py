@@ -184,7 +184,8 @@ def image_demo(predictor, vis_folder, current_time, args):
     tracker = BYTETracker(args, frame_rate=args.fps)
     timer = Timer()
     results = []
-
+    clients = []
+    
     for frame_id, img_path in enumerate(files, 1):
         outputs, img_info = predictor.inference(img_path, timer)
         if outputs[0] is not None:
