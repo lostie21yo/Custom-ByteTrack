@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # Copyright (c) 2014-2021 Megvii Inc. All rights reserved.
 
+from optparse import Values
 import cv2
 import numpy as np
 
@@ -107,6 +108,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
     
+    AvgSSm = ((sum(clients.values())/len(clients.values()))/avgfps)*60 # скорость обслуживания чел/мин
 
     if visualization == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
@@ -122,7 +124,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (51, 153, 255), thickness=text_thickness)
     cv2.putText(im, f'Visitors: {len(tlwhs)-workers}', 
                 (0, int(60 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
-    cv2.putText(im, f'Avg service speed: ^_^', 
+    cv2.putText(im, f'Avg service speed: {round(AvgSSm, 2)}', 
                 (0, int(75 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
     
     return im
