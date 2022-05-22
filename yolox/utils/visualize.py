@@ -49,7 +49,7 @@ def get_color(idx):
     return color
 
 clients = {}
-client = 0
+clients_ids = []
 
 def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=None):
     im = np.ascontiguousarray(np.copy(image))
@@ -66,7 +66,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
 
     workers = 0
     queue = 0
-    
+        
     # visual parametres 
     visualization = True
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
@@ -99,7 +99,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         if obj_id in list(clients.keys()):
             clients[obj_id] += 1
             if clients[obj_id] > 240:
-                client += 1
+                clients_ids.append(obj_id)
 
     if visualization == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
@@ -107,7 +107,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
     cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
-    cv2.putText(im, f'Employees: {workers} Total Clients: {client}', # Potential: {len(tlwhs)-workers-client}
+    cv2.putText(im, f'Employees: {workers} Total Clients: {len(clients_ids)}', # Potential: {len(tlwhs)-workers-client}
                 (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
     cv2.putText(im, f'Queue: {queue}',
                 (0, int(30 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
