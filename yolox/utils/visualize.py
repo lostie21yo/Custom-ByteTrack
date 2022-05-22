@@ -82,13 +82,21 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         if ids2 is not None:
             id_text = id_text + ', {}'.format(int(ids2[i]))
         color = get_color(abs(obj_id))
-        cv2.circle(im, dot, 5, color=color, thickness=-1)
-        if visualization == True:
-            cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
-            cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0),
-                        thickness=text_thickness)
+        
         if dot[1]<im_h*cashbox_border:
             workers += 1
+            cv2.circle(im, dot, 5, color=(0, 0, 255), thickness=-1)
+            if visualization == True:
+                cv2.rectangle(im, intbox[0:2], intbox[2:4], color=(0, 0, 255), thickness=line_thickness)
+                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255),
+                            thickness=text_thickness)
+        else:
+            cv2.circle(im, dot, 5, color=color, thickness=-1)
+            if visualization == True:
+                cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
+                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0),
+                            thickness=text_thickness)
+
         if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3]:
             if obj_id not in list(clients.keys()):
                 clients.update([[obj_id, 0]])
@@ -105,7 +113,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (255, 153, 51), thickness=line_thickness) # queue box
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
-    cv2.rectangle(im, (0, 0), (round(im_w*0.2), round(im_h*0.25)), color=(255, 255, 255), thickness=-1) # white background
+    cv2.rectangle(im, (0, 0), (round(im_w*0.22), round(im_h*0.22)), color=(255, 255, 255), thickness=-1) # white background
     cv2.putText(im, f'Employees: {workers}', 
                 (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
     cv2.putText(im, f'Total Clients: {len(clients_ids)}', 
@@ -133,7 +141,6 @@ _COLORS = np.array(
         1.000, 0.500, 0.000,
         0.749, 0.749, 0.000,
         0.000, 1.000, 0.000,
-        0.000, 0.000, 1.000,
         0.667, 0.000, 1.000,
         0.333, 0.333, 0.000,
         0.333, 0.667, 0.000,
@@ -189,7 +196,6 @@ _COLORS = np.array(
         0.000, 0.000, 0.500,
         0.000, 0.000, 0.667,
         0.000, 0.000, 0.833,
-        0.000, 0.000, 1.000,
         0.000, 0.000, 0.000,
         0.143, 0.143, 0.143,
         0.286, 0.286, 0.286,
