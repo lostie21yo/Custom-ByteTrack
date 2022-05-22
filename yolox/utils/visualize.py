@@ -62,13 +62,16 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_scale = 2
     text_thickness = 3
     line_thickness = 3
+
     workers = 0
     client = 0
     queue = 0
+    
+    # visual parametres 
+    visual_border = False
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
     cashbox = tuple(map(int, (im_w*0.39, im_h*cashbox_border, im_w*0.62, im_h*0.85)))
-    queuebox = tuple(map(int, cashbox[0], cashbox[1], im_w*0.95, cashbox[3]))
-    visual_border = True
+    queuebox = tuple(map(int, (cashbox[0], cashbox[1], im_w*0.95, cashbox[3])))
     
 
     for i, tlwh in enumerate(tlwhs):
@@ -95,14 +98,14 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
 
     if visual_border == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
-        cv2.rectangle(im, cashbox[0:2], cashbox[2:4], color=(17, 173, 1), thickness=line_thickness) # cashbox
-        cv2.rectangle(im, queuebox[0:2], queuebox[2:4], color=(15, 0, 195), thickness=line_thickness) # queue box
+        cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (255, 153, 51), thickness=line_thickness) # queue box
+        cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
     cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
-    cv2.putText(im, f'Employees: {workers} Potential: {len(tlwhs)-workers-client} Total Clients: {len(clients)} \n Queue: {queue}',
-                (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+    cv2.putText(im, f'Employees: {workers} Total Clients: {len(clients)}', # Potential: {len(tlwhs)-workers-client}
+                (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
     cv2.putText(im, f'Queue: {queue}',
-                (0, int(40 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+                (0, int(30 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
 
     return im
 
