@@ -48,6 +48,7 @@ def get_color(idx):
 
     return color
 
+
 clients = {}
 clients_ids = []
 
@@ -57,17 +58,15 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
 
     top_view = np.zeros([im_w, im_w, 3], dtype=np.uint8) + 255
 
-    #text_scale = max(1, image.shape[1] / 1600.)
-    #text_thickness = 2
-    #line_thickness = max(1, int(image.shape[1] / 500.))
+    # parametres 
     text_scale = 2
     text_thickness = 3
     line_thickness = 3
-
+    avgfps = 25
     workers = 0
     queue = 0
-        
-    # visual parametres 
+    
+    # visualization
     visualization = True
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
     cashbox = tuple(map(int, (im_w*0.39, im_h*cashbox_border, im_w*0.62, im_h*0.85)))
@@ -95,7 +94,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 clients.update([[obj_id, 0]])
             if obj_id in list(clients.keys()):
                 clients[obj_id] += 1
-                if clients[obj_id] > 250 and obj_id not in clients_ids:
+                if clients[obj_id] > avgfps*5 and obj_id not in clients_ids:
                     clients_ids.append(obj_id)
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
@@ -106,11 +105,15 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (255, 153, 51), thickness=line_thickness) # queue box
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
-    cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
-    cv2.putText(im, f'Employees: {workers} Total Clients: {len(clients_ids)}', # Potential: {len(tlwhs)-workers-client}
+    cv2.rectangle(im, (0, 0), (round(im_w*0.2), round(im_h*0.25)), color=(255, 255, 255), thickness=-1) # white background
+    cv2.putText(im, f'Employees: {workers}', 
                 (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
-    cv2.putText(im, f'Queue: {queue}',
+    cv2.putText(im, f'Total Clients: {len(clients_ids)}', 
                 (0, int(30 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+    cv2.putText(im, f'Visitors: {len(tlwhs)-workers}', 
+                (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+    cv2.putText(im, f'Queue: {queue}',
+                (0, int(60 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
 
     return im
 
