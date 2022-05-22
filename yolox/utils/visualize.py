@@ -90,16 +90,16 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                         thickness=text_thickness)
         if dot[1]<im_h*cashbox_border:
             workers += 1
-        if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3] and obj_id not in list(clients.keys()):
-            clients.update([[obj_id, 0]])
+        if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3]:
+            if obj_id not in list(clients.keys()):
+                clients.update([[obj_id, 0]])
+            if obj_id in list(clients.keys()):
+                clients[obj_id] += 1
+                if clients[obj_id] > 240:
+                    clients_ids.append(obj_id)
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
     
-    for obj_id in obj_ids:
-        if obj_id in list(clients.keys()):
-            clients[obj_id] += 1
-            if clients[obj_id] > 240:
-                clients_ids.append(obj_id)
 
     if visualization == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
