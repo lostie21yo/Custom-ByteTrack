@@ -48,7 +48,7 @@ def get_color(idx):
 
     return color
 
-clients = []
+clients = {}
 
 def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=None):
     im = np.ascontiguousarray(np.copy(image))
@@ -68,7 +68,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     queue = 0
     
     # visual parametres 
-    visual_border = False
+    visualization = True
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
     cashbox = tuple(map(int, (im_w*0.39, im_h*cashbox_border, im_w*0.62, im_h*0.85)))
     queuebox = tuple(map(int, (cashbox[0], cashbox[1], im_w*0.95, cashbox[3])))
@@ -84,19 +84,22 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
             id_text = id_text + ', {}'.format(int(ids2[i]))
         color = get_color(abs(obj_id))
         cv2.circle(im, dot, 5, color=color, thickness=-1)
-        cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
-        cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0),
-                    thickness=text_thickness)
+        if visualization == True:
+            cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
+            cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0),
+                        thickness=text_thickness)
         if dot[1]<im_h*cashbox_border:
             workers += 1
-        if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3] and obj_id not in clients:
-            clients.append(obj_id)
-        if obj_id in clients:
-            client += 1
+        if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3] and obj_id not in list(clients.keys()):
+            clients.update([[obj_id, 0]])
+        if obj_id in list(clients.keys()):
+            clients[obj_id] += 1
+            if clients[obj_id] > 240:
+                client += 1
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
 
-    if visual_border == True:
+    if visualization == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
         cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (255, 153, 51), thickness=line_thickness) # queue box
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
