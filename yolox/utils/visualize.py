@@ -63,8 +63,13 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_thickness = 3
     line_thickness = 3
     workers = 0
+    client = 0
+    queue = 0
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
-    cashbox = tuple(map(int, (im_w*0.37, im_h*cashbox_border, im_w*0.60, im_h*0.85)))
+    cashbox = tuple(map(int, (im_w*0.39, im_h*cashbox_border, im_w*0.62, im_h*0.85)))
+    queuebox = tuple(map(int, cashbox[0:2], im_w*0.95, cashbox[3]))
+    visual_border = True
+    
 
     for i, tlwh in enumerate(tlwhs):
         x1, y1, w, h = tlwh
@@ -82,13 +87,20 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         if dot[1]<im_h*cashbox_border:
             workers += 1
         if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3] and obj_id not in clients:
-                clients.append(obj_id)
+            clients.append(obj_id)
+        if obj_id in clients:
+            client += 1
+        if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
+            queue += 1
 
-    cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
-    cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
-    cv2.rectangle(im, cashbox[0:2], cashbox[2:4], color=(0, 0, 255), thickness=line_thickness)
-    cv2.putText(im, f'Employees: {workers} Potential: {len(tlwhs)-workers} Total Clients: {len(clients)}',
+    if visual_border == True:
+        cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
+        cv2.rectangle(im, cashbox[0:2], cashbox[2:4], color=(17, 173, 1), thickness=line_thickness) # cashbox
+        cv2.rectangle(im, queuebox[0:2], queuebox[2:4], color=(15, 0, 195), thickness=line_thickness) # queue box
+
+    cv2.putText(im, f'Employees: {workers} Potential: {len(tlwhs)-workers-client} Total Clients: {len(clients)} \n Queue: {queue}',
                 (0, int(20 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+    cv2.rectangle(im, (0, 0), (round(im_w*0.6), round(im_h*0.15)), color=(255, 255, 255), thickness=-1)
 
     return im
 
