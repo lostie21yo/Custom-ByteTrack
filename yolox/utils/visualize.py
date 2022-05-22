@@ -96,7 +96,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
             cv2.circle(im, dot, 5, color=color, thickness=-1)
             if visualization == True:
                 cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
-                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0),
+                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, color=color,
                             thickness=text_thickness)
 
         if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3]:
@@ -128,7 +128,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (51, 153, 255), thickness=text_thickness)
     cv2.putText(im, f'Visitors: {len(tlwhs)-workers}', 
                 (0, int(60 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
-    cv2.putText(im, f'Service rate: {round(AvgSSm, 2)}', 
+    cv2.putText(im, f'Service rate: {round(AvgSSm, 2)} p/min', 
                 (0, int(75 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
     
     return im
