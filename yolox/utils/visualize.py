@@ -61,7 +61,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     # parametres 
     text_scale = 2
     text_thickness = 3
-    line_thickness = 3
+    line_thickness = 2
     avgfps = 25
     workers = 0
     queue = 0
@@ -110,19 +110,21 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
 
     if visualization == True:
         cv2.line(im, (0, round(im_h*cashbox_border)), (im_w, round(im_h*cashbox_border)), (0, 0, 255), thickness=line_thickness)
-        cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (255, 153, 51), thickness=line_thickness) # queue box
+        cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (51, 153, 255), thickness=line_thickness*2) # queue box
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
-    cv2.rectangle(im, (0, 0), (round(im_w*0.22), round(im_h*0.22)), color=(255, 255, 255), thickness=-1) # white background
+    cv2.rectangle(im, (0, 0), (round(im_w*0.30), round(im_h*0.22)), color=(255, 255, 255), thickness=-1) # white background
     cv2.putText(im, f'Employees: {workers}', 
-                (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+                (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255), thickness=text_thickness)
     cv2.putText(im, f'Total Clients: {len(clients_ids)}', 
-                (0, int(30 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
-    cv2.putText(im, f'Visitors: {len(tlwhs)-workers}', 
-                (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+                (0, int(30 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 153, 0), thickness=text_thickness)
     cv2.putText(im, f'Queue: {queue}',
+                (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (51, 153, 255), thickness=text_thickness)
+    cv2.putText(im, f'Visitors: {len(tlwhs)-workers}', 
                 (0, int(60 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
-
+    cv2.putText(im, f'Avg service speed: ^_^', 
+                (0, int(75 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 0), thickness=text_thickness)
+    
     return im
 
 
