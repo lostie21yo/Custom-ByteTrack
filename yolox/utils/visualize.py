@@ -95,7 +95,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 clients.update([[obj_id, 0]])
             if obj_id in list(clients.keys()):
                 clients[obj_id] += 1
-                if clients[obj_id] > 240:
+                if clients[obj_id] > 250 and obj_id not in clients_ids:
                     clients_ids.append(obj_id)
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
