@@ -3,6 +3,7 @@
 # Copyright (c) 2014-2021 Megvii Inc. All rights reserved.
 
 from optparse import Values
+from turtle import speed
 import cv2
 import numpy as np
 
@@ -63,7 +64,8 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_scale = 2
     text_thickness = 3
     line_thickness = 2
-    avgfps = 25
+    avgfps = 25 # среднее количество кадров в секунду
+    speedup = 5 # коэфициент ускорения видео
     workers = 0
     queue = 0
     AvgSSm = 0
@@ -110,7 +112,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
             queue += 1
     
     try:
-        AvgSSm = (sum(clients.values())/len(clients.values())) / (avgfps * 60) # скорость обслуживания чел/мин
+        AvgSSm = (sum(clients.values())/len(clients.values())) / (avgfps * 60 * speedup) # скорость обслуживания чел/мин
     except ZeroDivisionError:
         pass
 
