@@ -76,7 +76,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     visualization = True
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
     cashbox = tuple(map(int, (im_w*0.32, im_h*cashbox_border, im_w*0.64, im_h*0.95)))
-    queuebox = tuple(map(int, (cashbox[0], cashbox[1], im_w, cashbox[3])))
+    queuebox = tuple(map(int, (cashbox[0], cashbox[1], im_w, im_h*0.9)))
     
 
     for i, tlwh in enumerate(tlwhs):
