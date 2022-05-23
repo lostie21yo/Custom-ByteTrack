@@ -62,7 +62,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
 
     # parametres 
     text_scale = 2
-    text_thickness = 3
+    text_thickness = 2
     line_thickness = 2
     avgfps = 25 # среднее количество кадров в секунду
     speedup = 5 # коэфициент ускорения видео
@@ -74,7 +74,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     # visualization
     visualization = True
     cashbox_border = 0.62 # коэффициент расположения линии, разделяющей прилавок и торговый зал
-    cashbox = tuple(map(int, (im_w*0.39, im_h*cashbox_border, im_w*0.62, im_h*0.85)))
+    cashbox = tuple(map(int, (im_w*0.36, im_h*cashbox_border, im_w*0.60, im_h*0.85)))
     queuebox = tuple(map(int, (cashbox[0], cashbox[1], im_w*0.95, cashbox[3])))
     
 
@@ -91,10 +91,10 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         if dot[1]<im_h*cashbox_border:
             workers += 1
             cv2.circle(im, dot, 5, color=(0, 0, 255), thickness=-1)
-            if visualization == True:
-                cv2.rectangle(im, intbox[0:2], intbox[2:4], color=(0, 0, 255), thickness=line_thickness)
-                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255),
-                            thickness=text_thickness)
+            # if visualization == True:
+            #     cv2.rectangle(im, intbox[0:2], intbox[2:4], color=(0, 0, 255), thickness=line_thickness)
+            #     cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255),
+            #                 thickness=text_thickness)
         else:
             cv2.circle(im, dot, 5, color=color, thickness=-1)
             if visualization == True:
@@ -122,7 +122,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
         cv2.rectangle(im, queuebox[0:2], queuebox[2:4], (51, 153, 255), thickness=line_thickness*2) # queue box
         cv2.rectangle(im, cashbox[0:2], cashbox[2:4], (0, 153, 0), thickness=line_thickness) # cashbox
     
-    cv2.rectangle(im, (0, 0), (round(im_w*0.30), round(im_h*0.22)), color=(255, 255, 255), thickness=-1) # white background
+    cv2.rectangle(im, (0, 0), (round(im_w*0.33), round(im_h*0.22)), color=(255, 255, 255), thickness=-1) # white background
     cv2.putText(im, f'Employees: {workers}', 
                 (0, int(15 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 0, 255), thickness=text_thickness)
     cv2.putText(im, f'Total Clients: {len(clients_ids)}', 
