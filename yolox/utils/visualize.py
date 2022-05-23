@@ -65,7 +65,8 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_thickness = 3
     line_thickness = 2
     avgfps = 25 # среднее количество кадров в секунду
-    speedup = 5 # коэфициент ускорения видео
+    speedup = 1 # коэфициент ускорения видео
+    client_time = 5 # время, с которого считать посетителя клиентом
     workers = 0
     queue = 0
     AvgSSm = 0
@@ -106,13 +107,13 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 clients.update([[obj_id, 0]])
             if obj_id in list(clients.keys()):
                 clients[obj_id] += 1
-                if clients[obj_id] > avgfps*5 and obj_id not in clients_ids:
+                if clients[obj_id] > avgfps*client_time/speedup and obj_id not in clients_ids:
                     clients_ids.append(obj_id)
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
             queue += 1
     
     try:
-        AvgSSm = (sum(clients.values())/len(clients.values())) / (avgfps * 60 * speedup) # скорость обслуживания чел/мин
+        AvgSSm = (sum(clients.values())/len(clients.values()) * speedup) / (avgfps * 60) # скорость обслуживания чел/мин
     except ZeroDivisionError:
         pass
 
