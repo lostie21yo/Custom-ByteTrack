@@ -65,8 +65,8 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
     text_thickness = 3
     line_thickness = 2
     avgfps = 25 # среднее количество кадров в секунду
-    speedup = 1 # коэфициент ускорения видео
-    client_time = 5 # время, с которого считать посетителя клиентом
+    speedup = 5 # коэфициент ускорения видео
+    client_time = 10 # время, с которого считать посетителя клиентом
     workers = 0
     queue = 0
     AvgSSm = 0
