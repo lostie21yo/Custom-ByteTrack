@@ -53,7 +53,7 @@ def get_color(idx):
 
 clients = {}
 clients_ids = []
-visitors = []
+visitors = {}
 
 def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=None):
     im = np.ascontiguousarray(np.copy(image))
@@ -103,7 +103,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, color=color,
                             thickness=text_thickness)
         if dot[1]>im_h*cashbox_border:
-            visitors.append[obj_id]
+            visitors.update([[obj_id, 0]])
         if dot[0]>cashbox[0] and dot[0]<cashbox[2] and dot[1]>im_h*cashbox_border and dot[1]<cashbox[3]:
             if obj_id not in list(clients.keys()):
                 clients.update([[obj_id, 0]])
@@ -112,8 +112,9 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 if clients[obj_id] > avgfps*client_time/speedup and obj_id not in clients_ids:
                     clients_ids.append(obj_id)
         if dot[0]>queuebox[0] and dot[0]<queuebox[2] and dot[1]>im_h*cashbox_border and dot[1]<queuebox[3]:
-            queue += 1
-    
+            visitors[obj_id] += 1
+            if visitors[obj_id] > avgfps*client_time/speedup:
+                queue += 1
     try:
         AvgSSm = (sum(clients.values())/len(clients.values()) * speedup) / (avgfps * 60) # скорость обслуживания чел/мин
     except ZeroDivisionError:
