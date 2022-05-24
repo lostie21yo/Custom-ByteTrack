@@ -119,7 +119,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 if visitors[obj_id] > avgfps*client_time/speedup:
                     queue += 1
     try:
-        AvgSSm = (sum(clients.values())/len(clients.values()) * speedup) / (avgfps * 60) # скорость обслуживания чел/мин
+        AvgSSm = (sum(clients.values())/len(clients.values()) * speedup) / (avgfps * 60) # скорость обслуживания (мин на чел)
     except ZeroDivisionError:
         pass
 
