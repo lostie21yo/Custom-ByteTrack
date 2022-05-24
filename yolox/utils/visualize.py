@@ -98,10 +98,9 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
             #                 thickness=text_thickness)
         else:
             cv2.circle(im, dot, 5, color=color, thickness=-1)
-            if visualization:
-                cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
-                cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, color=color,
-                            thickness=text_thickness)
+            cv2.rectangle(im, intbox[0:2], intbox[2:4], color=color, thickness=line_thickness)
+            cv2.putText(im, id_text, (intbox[0], intbox[1]), cv2.FONT_HERSHEY_PLAIN, text_scale, color=color,
+                        thickness=text_thickness)
         
         if dot[1]>im_h*cashbox_border and obj_id not in list(visitors.keys()):
             visitors.update([[obj_id, 0]])
@@ -138,7 +137,7 @@ def plot_tracking(image, tlwhs, obj_ids, scores=None, frame_id=0, fps=0., ids2=N
                 (0, int(45 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (0, 153, 0), thickness=text_thickness)
     cv2.putText(im, f'Queue: {queue}',
                 (0, int(60 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (51, 153, 255), thickness=text_thickness)
-    cv2.putText(im, f'Service rate: {round(AvgSSm, 2)} p/min', 
+    cv2.putText(im, f'Service rate: {round(AvgSSm, 2)} min/p', 
                 (0, int(75 * text_scale)), cv2.FONT_HERSHEY_PLAIN, text_scale, (255, 0, 0), thickness=text_thickness)
     
     return im
